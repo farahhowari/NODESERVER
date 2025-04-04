@@ -10,7 +10,28 @@ async function update(id) {
    console.log(id) 
 }
 async function deleteUser(id) {
-    console.log(id) 
+ var conf= confirm('Are your sure you want to delete this user ')
+    console.log(conf) 
+    var DELETE_URL='http://127.0.0.1:5050/api/deleteUser'
+
+    if(conf){
+var response=await fetch(DELETE_URL+"/"+id,{
+    method:"DELETE",
+    headers:{
+        'content-Type':'application/json',
+        'Auth':token
+    },
+}).then(res=>res.json())
+.then(data=>{
+    console.log(data)
+    if(data.message=='User Deleted successfully'){
+        alert('User Deleted successfully')
+        window.location.reload()
+    }
+})
+    }else{
+     alert('user not found')
+    }
  }
 
 async function getUsers() {
@@ -40,15 +61,18 @@ async function getUsers() {
                 var td4=document.createElement('td')
                 var updateButton =document.createElement('button')
                 updateButton.innerHTML="update"
+                updateButton.onclick=()=>update(user._id)
                 td4.appendChild(updateButton)
 
 
                 var deleteButton =document.createElement('button')
                 deleteButton.innerHTML="delete"
+                deleteButton.onclick=()=>deleteUser(user._id)
                 var td5 =document.createElement('td')
                 td5.appendChild(deleteButton)
                tr.appendChild(td3)
                tr.appendChild(td4)
+               tr.appendChild(td5)
                tbody.appendChild(tr)
             })
             if(data){
